@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>London Barber — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--card:#141414;--card2:#1a1a1a;--border:#2a2a2a;
+  --gold:#c8a45e;--gold-light:#e8cc7e;--gold-dark:#a88a3e;
+  --text:#f0ece4;--dim:#8a8478;--muted:#5a564e;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;
+  --font:'Outfit',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+
+.header{
+  padding:24px 20px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:800px;margin:0 auto;
+}
+.header h1{font-size:20px;font-weight:800;color:var(--gold)}
+.header a{color:var(--dim);text-decoration:none;font-size:13px;font-weight:500}
+.header a:hover{color:var(--gold)}
+
+.main{max-width:800px;margin:0 auto;padding:20px 16px 60px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.stat-num{font-size:28px;font-weight:800;color:var(--gold)}
+.stat-label{font-size:12px;color:var(--dim);margin-top:4px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);
+  background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;
+  font-family:var(--font);transition:all 0.3s}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab:hover{color:var(--text)}
+
+/* Tab Content */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Date Filter */
+.date-filter{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+.date-filter input{padding:10px 14px;border-radius:8px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-family:var(--font);font-size:14px}
+.date-filter input:focus{outline:none;border-color:var(--gold)}
+.filter-btn{padding:10px 16px;border-radius:8px;border:1px solid var(--gold-dark);
+  background:transparent;color:var(--gold);font-family:var(--font);font-size:13px;
+  font-weight:600;cursor:pointer;transition:all 0.3s}
+.filter-btn:hover{background:rgba(200,164,94,0.1)}
+.filter-btn.active{background:var(--gold);color:var(--bg)}
+
+/* Booking Cards */
+.booking-list{display:flex;flex-direction:column;gap:8px}
+.booking-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;
+  display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;
+}
+.booking-card:hover{border-color:var(--gold-dark)}
+.booking-left{flex:1}
+.booking-name{font-size:15px;font-weight:700;color:var(--text)}
+.booking-details{font-size:12px;color:var(--dim);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.booking-detail{display:flex;align-items:center;gap:4px}
+.booking-right{display:flex;align-items:center;gap:10px}
+.booking-price{font-size:16px;font-weight:800;color:var(--gold)}
+.cancel-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--red);cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+.cancel-btn:hover{background:rgba(248,113,113,0.1);border-color:var(--red)}
+
+.empty{text-align:center;color:var(--dim);font-size:14px;padding:40px 0}
+
+/* Service Management */
+.service-item{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+}
+.service-info h3{font-size:15px;font-weight:700;color:var(--text)}
+.service-info p{font-size:12px;color:var(--dim);margin-top:2px}
+.service-price{font-size:18px;font-weight:800;color:var(--gold)}
+
+.add-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:16px}
+.add-form h3{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.form-input{padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+  background:var(--card2);color:var(--text);font-family:var(--font);font-size:13px}
+.form-input:focus{outline:none;border-color:var(--gold)}
+.form-input-full{grid-column:1/-1}
+.btn{width:100%;padding:12px;border-radius:8px;border:none;font-family:var(--font);
+  font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:all 0.3s}
+.btn-gold{background:var(--gold);color:var(--bg)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-gold:disabled{opacity:0.3;cursor:not-allowed}
+
+.loading{text-align:center;padding:30px 0;color:var(--dim)}
+.spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--gold);
+  border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.refresh-btn{position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;
+  background:var(--gold);color:var(--bg);border:none;font-size:20px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(200,164,94,0.3);transition:all 0.3s;z-index:50}
+.refresh-btn:hover{transform:scale(1.1)}
+
+@media(max-width:500px){.stats{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}
+  .booking-details{flex-direction:column;gap:4px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>✂️ Admin Dashboard</h1>
+  <a href="/">← Back to Website</a>
+</div>
+
+<div class="main">
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-num" id="todayCount">-</div><div class="stat-label">Today</div></div>
+    <div class="stat"><div class="stat-num" id="tomorrowCount">-</div><div class="stat-label">Tomorrow</div></div>
+    <div class="stat"><div class="stat-num" id="totalCount">-</div><div class="stat-label">Total</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('bookings')">📅 Bookings</button>
+    <button class="tab" onclick="switchTab('services')">💈 Services</button>
+  </div>
+
+  <!-- Bookings Tab -->
+  <div class="tab-content active" id="bookingsTab">
+    <div class="date-filter">
+      <button class="filter-btn active" onclick="filterBookings('today')">Today</button>
+      <button class="filter-btn" onclick="filterBookings('tomorrow')">Tomorrow</button>
+      <button class="filter-btn" onclick="filterBookings('all')">All</button>
+      <input type="date" id="filterDate" onchange="filterBookings('custom')">
+    </div>
+    <div class="booking-list" id="bookingList">
+      <div class="loading"><div class="spinner"></div>Loading...</div>
+    </div>
+  </div>
+
+  <!-- Services Tab -->
+  <div class="tab-content" id="servicesTab">
+    <div id="servicesList"></div>
+    <div class="add-form">
+      <h3>+ Add New Service</h3>
+      <input type="text" class="form-input form-input-full" id="newName" placeholder="Service name">
+      <div class="form-row">
+        <input type="number" class="form-input" id="newPrice" placeholder="Price (£)">
+        <input type="number" class="form-input" id="newDuration" placeholder="Duration (min)">
+      </div>
+      <button class="btn btn-gold" onclick="addService()">Add Service</button>
+    </div>
+  </div>
+
+</div>
+
+<button class="refresh-btn" onclick="loadAll()" title="Refresh">🔄</button>
+
+<script>
+const API = 'http://127.0.0.1:8080';
+let allBookings = [];
+let allServices = [];
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+function getTomorrow() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split('T')[0];
+}
+
+// ═══ Tabs ═══
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  if (tab === 'bookings') {
+    document.querySelectorAll('.tab')[0].classList.add('active');
+    document.getElementById('bookingsTab').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab')[1].classList.add('active');
+    document.getElementById('servicesTab').classList.add('active');
+  }
+}
+
+// ═══ Load All ═══
+async function loadAll() {
+  await Promise.all([loadBookings(), loadServices()]);
+  updateStats();
+}
+
+// ═══ Bookings ═══
+async function loadBookings() {
+  try {
+    const res = await fetch(API + '/bookings');
+    allBookings = await res.json();
+    filterBookings('today');
+    updateStats();
+  } catch (e) {
+    document.getElementById('bookingList').innerHTML = '<div class="empty">Cannot connect to server</div>';
+  }
+}
+
+function filterBookings(filter) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  let filtered = allBookings;
+  const today = getToday();
+  const tomorrow = getTomorrow();
+
+  if (filter === 'today') {
+    filtered = allBookings.filter(b => b.date === today);
+    document.querySelectorAll('.filter-btn')[0].classList.add('active');
+  } else if (filter === 'tomorrow') {
+    filtered = allBookings.filter(b => b.date === tomorrow);
+    document.querySelectorAll('.filter-btn')[1].classList.add('active');
+  } else if (filter === 'all') {
+    document.querySelectorAll('.filter-btn')[2].classList.add('active');
+  } else if (filter === 'custom') {
+    const d = document.getElementById('filterDate').value;
+    filtered = allBookings.filter(b => b.date === d);
+  }
+
+  // Sort by time
+  filtered.sort((a, b) => a.time.localeCompare(b.time));
+
+  renderBookings(filtered);
+}
+
+function renderBookings(bookings) {
+  const list = document.getElementById('bookingList');
+  if (bookings.length === 0) {
+    list.innerHTML = '<div class="empty">No bookings found</div>';
+    return;
+  }
+  list.innerHTML = bookings.map(b => {
+    const service = allServices.find(s => s.id === b.service_id);
+    const serviceName = service ? service.name : 'Unknown';
+    const servicePrice = service ? '£' + service.price : '';
+    return `
+      <div class="booking-card" id="booking${b.id}">
+        <div class="booking-left">
+          <div class="booking-name">${b.customer_name}</div>
+          <div class="booking-details">
+            <span class="booking-detail">📞 ${b.customer_phone}</span>
+            <span class="booking-detail">✂️ ${serviceName}</span>
+            <span class="booking-detail">📅 ${b.date}</span>
+            <span class="booking-detail">🕐 ${b.time}</span>
+          </div>
+        </div>
+        <div class="booking-right">
+          <div class="booking-price">${servicePrice}</div>
+          <button class="cancel-btn" onclick="cancelBooking(${b.id})" title="Cancel">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function cancelBooking(id) {
+  if (!confirm('Cancel this booking?')) return;
+  try {
+    await fetch(API + '/bookings/' + id, { method: 'DELETE' });
+    await loadBookings();
+  } catch (e) {
+    alert('Error cancelling booking');
+  }
+}
+
+function updateStats() {
+  const today = getToday();
+  const tomorrow = getTomorrow();
+  document.getElementById('todayCount').textContent = allBookings.filter(b => b.date === today).length;
+  document.getElementById('tomorrowCount').textContent = allBookings.filter(b => b.date === tomorrow).length;
+  document.getElementById('totalCount').textContent = allBookings.length;
+}
+
+// ═══ Services ═══
+async function loadServices() {
+  try {
+    const res = await fetch(API + '/services');
+    allServices = await res.json();
+    renderServices();
+  } catch (e) {
+    document.getElementById('servicesList').innerHTML = '<div class="empty">Cannot connect</div>';
+  }
+}
+
+function renderServices() {
+  const list = document.getElementById('servicesList');
+  if (allServices.length === 0) {
+    list.innerHTML = '<div class="empty">No services yet</div>';
+    return;
+  }
+  list.innerHTML = allServices.map(s => `
+    <div class="service-item">
+      <div class="service-info">
+        <h3>${s.name}</h3>
+        <p>${s.duration} min</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="service-price">£${s.price}</div>
+        <button class="cancel-btn" onclick="editService(${s.id}, '${s.name}', ${s.price}, ${s.duration})" title="Edit" style="color:var(--gold)">✏️</button>
+        <button class="cancel-btn" onclick="deleteService(${s.id})" title="Delete">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function addService() {
+  const name = document.getElementById('newName').value.trim();
+  const price = parseFloat(document.getElementById('newPrice').value);
+  const duration = parseInt(document.getElementById('newDuration').value);
+  if (!name || !price || !duration) { alert('Fill all fields'); return; }
+  try {
+    await fetch(API + '/services', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, price, duration })
+    });
+    document.getElementById('newName').value = '';
+    document.getElementById('newPrice').value = '';
+    document.getElementById('newDuration').value = '';
+    await loadServices();
+  } catch (e) {
+    alert('Error adding service');
+  }
+}
+
+async function deleteService(id) {
+  if (!confirm('Delete this service?')) return;
+  try {
+    await fetch(API + '/services/' + id, { method: 'DELETE' });
+    await loadServices();
+  } catch (e) {
+    alert('Error deleting service');
+  }
+}
+
+function editService(id, name, price, duration) {
+  document.getElementById('newName').value = name;
+  document.getElementById('newPrice').value = price;
+  document.getElementById('newDuration').value = duration;
+  const btn = document.querySelector('.add-form .btn');
+  btn.textContent = 'Update Service';
+  btn.onclick = async function() {
+    try {
+      await fetch(API + '/services/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('newName').value.trim(),
+          price: parseFloat(document.getElementById('newPrice').value),
+          duration: parseInt(document.getElementById('newDuration').value)
+        })
+      });
+      document.getElementById('newName').value = '';
+      document.getElementById('newPrice').value = '';
+      document.getElementById('newDuration').value = '';
+      btn.textContent = 'Add Service';
+      btn.onclick = addService;
+      await loadServices();
+    } catch (e) {
+      alert('Error updating service');
+    }
+  };
+}
+
+// ═══ Init ═══
+loadAll();
+// Auto refresh every 30 seconds
+setInterval(loadAll, 30000);
+</script>
+
+</body>
+</html>

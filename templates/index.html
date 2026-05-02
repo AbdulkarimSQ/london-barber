@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>London Barber — Book Your Appointment</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--card:#141414;--card2:#1a1a1a;--border:#2a2a2a;
+  --gold:#c8a45e;--gold-light:#e8cc7e;--gold-dark:#a88a3e;--gold-glow:rgba(200,164,94,0.15);
+  --text:#f0ece4;--dim:#8a8478;--muted:#5a564e;
+  --green:#4ade80;--red:#f87171;--wa:#25D366;
+  --font:'Outfit',sans-serif;--display:'Playfair Display',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ═══ Hero ═══ */
+.hero{
+  text-align:center;padding:48px 20px 32px;
+  background:linear-gradient(180deg,#1a1714 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 50% 80%,rgba(200,164,94,0.06) 0%,transparent 50%);
+}
+.scissors{font-size:28px;margin-bottom:8px;position:relative;opacity:0.6}
+.logo{font-family:var(--display);font-size:38px;font-weight:900;color:var(--gold);position:relative;letter-spacing:3px;line-height:1.1}
+.logo-sub{font-size:12px;color:var(--dim);font-weight:400;margin-top:6px;letter-spacing:5px;text-transform:uppercase}
+.hero-line{width:60px;height:2px;background:var(--gold);margin:16px auto 0;border-radius:2px}
+.hero-info{margin-top:16px;font-size:13px;color:var(--dim);position:relative}
+.hero-info a{color:var(--gold);text-decoration:none}
+
+/* ═══ Nav Bar ═══ */
+.nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0}
+.nav-inner{display:flex;justify-content:center;gap:0;max-width:500px;margin:0 auto}
+.nav-btn{flex:1;padding:12px 8px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all 0.3s;font-family:var(--font)}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-btn:hover{color:var(--text)}
+
+/* ═══ Sections ═══ */
+.main{max-width:500px;margin:0 auto;padding:0 16px 40px}
+.panel{display:none;animation:fadeUp 0.4s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ Steps ═══ */
+.steps{display:flex;justify-content:center;gap:0;padding:16px 0 8px;max-width:400px;margin:0 auto}
+.step{flex:1;text-align:center;position:relative}
+.step-num{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:12px;font-weight:700;color:var(--muted);transition:all 0.4s}
+.step.active .step-num{border-color:var(--gold);background:var(--gold);color:var(--bg)}
+.step.done .step-num{border-color:var(--green);background:rgba(74,222,128,0.15);color:var(--green)}
+.step-label{font-size:10px;color:var(--muted);font-weight:500;transition:color 0.3s}
+.step.active .step-label{color:var(--gold)}
+.step.done .step-label{color:var(--green)}
+.step-line{position:absolute;top:16px;left:-50%;width:100%;height:2px;background:var(--border);z-index:-1}
+.step:first-child .step-line{display:none}
+.step.done .step-line{background:var(--green)}
+
+/* ═══ Section Title ═══ */
+.section-title{font-size:18px;font-weight:700;color:var(--text);margin:20px 0 12px;text-align:center}
+.section-sub{font-size:13px;color:var(--dim);text-align:center;margin:-8px 0 16px}
+
+/* ═══ Service Cards ═══ */
+.service-grid{display:flex;flex-direction:column;gap:8px}
+.service-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;
+  cursor:pointer;transition:all 0.3s;display:flex;justify-content:space-between;align-items:center;
+}
+.service-card:hover{border-color:var(--gold-dark);background:var(--card2)}
+.service-card.selected{border-color:var(--gold);background:rgba(200,164,94,0.08);box-shadow:0 0 20px var(--gold-glow)}
+.service-card.selected .svc-check{display:flex}
+.svc-info h3{font-size:15px;font-weight:700;color:var(--text)}
+.svc-info p{font-size:12px;color:var(--dim);margin-top:2px}
+.svc-right{display:flex;align-items:center;gap:12px}
+.svc-price{font-size:20px;font-weight:800;color:var(--gold)}
+.svc-price span{font-size:11px;font-weight:400;color:var(--dim)}
+.svc-check{display:none;width:24px;height:24px;border-radius:50%;background:var(--gold);align-items:center;justify-content:center;color:var(--bg);font-size:14px;font-weight:800}
+
+/* ═══ Date ═══ */
+.date-input{
+  width:100%;padding:14px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-family:var(--font);font-size:15px;
+  text-align:center;cursor:pointer;transition:border-color 0.3s;
+}
+.date-input:focus{outline:none;border-color:var(--gold)}
+
+/* ═══ Slots ═══ */
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.slot{
+  padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--card);
+  text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--dim);
+  transition:all 0.25s;
+}
+.slot:hover{border-color:var(--gold-dark);color:var(--text)}
+.slot.selected{border-color:var(--gold);background:rgba(200,164,94,0.12);color:var(--gold);box-shadow:0 0 12px var(--gold-glow)}
+.slot.booked{opacity:0.25;cursor:not-allowed;text-decoration:line-through}
+.slots-empty{text-align:center;color:var(--dim);font-size:14px;padding:30px 0}
+
+/* ═══ Form ═══ */
+.form-group{margin:12px 0}
+.form-label{font-size:13px;font-weight:600;color:var(--dim);margin-bottom:6px;display:block}
+.form-input{
+  width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-family:var(--font);font-size:14px;
+  transition:border-color 0.3s;
+}
+.form-input:focus{outline:none;border-color:var(--gold)}
+
+/* ═══ Summary ═══ */
+.summary{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.summary-row:last-child{border:none}
+.summary-label{color:var(--dim)}
+.summary-value{color:var(--text);font-weight:600}
+.summary-total{color:var(--gold);font-size:18px;font-weight:800}
+
+/* ═══ Buttons ═══ */
+.btn{
+  width:100%;padding:14px;border-radius:10px;border:none;font-family:var(--font);
+  font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s;margin-top:12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-gold{background:var(--gold);color:var(--bg)}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-1px)}
+.btn-gold:disabled{opacity:0.3;cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--dim);margin-top:8px}
+.btn-outline:hover{border-color:var(--gold-dark);color:var(--text)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:#20bd5a}
+.btn-call{background:transparent;border:1px solid var(--gold-dark);color:var(--gold)}
+.btn-call:hover{background:rgba(200,164,94,0.08)}
+
+/* ═══ Confirm ═══ */
+.confirm-icon{font-size:60px;text-align:center;margin:20px 0 10px}
+.confirm-title{text-align:center;font-size:22px;font-weight:800;color:var(--gold)}
+.confirm-sub{text-align:center;font-size:14px;color:var(--dim);margin-top:6px}
+
+/* ═══ Info Section ═══ */
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:12px 0}
+.info-card h3{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.info-row:last-child{border:none}
+.info-day{color:var(--dim)}
+.info-time{color:var(--text);font-weight:500}
+.map-container{border-radius:12px;overflow:hidden;margin:12px 0;border:1px solid var(--border)}
+.map-container iframe{width:100%;height:250px;border:none}
+.contact-btns{display:flex;gap:8px;margin-top:12px}
+.contact-btns .btn{flex:1;margin-top:0;font-size:13px;padding:12px}
+
+/* ═══ Loading ═══ */
+.loading{text-align:center;padding:30px 0;color:var(--dim);font-size:14px}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:10px 14px;color:var(--red);font-size:13px;margin:10px 0;text-align:center}
+
+/* ═══ Footer ═══ */
+.footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);margin-top:40px}
+.footer a{color:var(--gold);text-decoration:none}
+
+@media(max-width:400px){.slots-grid{grid-template-columns:repeat(3,1fr)}.logo{font-size:30px}.contact-btns{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<!-- ═══ Hero ═══ -->
+<div class="hero">
+  <div class="scissors">✂️</div>
+  <div class="logo">LONDON BARBER</div>
+  <div class="logo-sub">Premium Barbershop</div>
+  <div class="hero-line"></div>
+  <div class="hero-info">371-373 Edgware Rd, London W2 1BS</div>
+</div>
+
+<!-- ═══ Navigation ═══ -->
+<div class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showSection('booking')">✂️ Book Now</button>
+    <button class="nav-btn" onclick="showSection('info')">📍 Info & Hours</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════
+     BOOKING SECTION
+     ═══════════════════════════ -->
+<div class="panel active" id="bookingSection">
+
+  <div class="steps" id="steps">
+    <div class="step active" data-step="1">
+      <div class="step-num">1</div>
+      <div class="step-label">Service</div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="step-line"></div>
+      <div class="step-num">2</div>
+      <div class="step-label">Date & Time</div>
+    </div>
+    <div class="step" data-step="3">
+      <div class="step-line"></div>
+      <div class="step-num">3</div>
+      <div class="step-label">Details</div>
+    </div>
+    <div class="step" data-step="4">
+      <div class="step-line"></div>
+      <div class="step-num">4</div>
+      <div class="step-label">Done</div>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="panel active" id="panel1">
+    <div class="section-title">Choose a Service</div>
+    <div class="section-sub">Select the service you'd like to book</div>
+    <div class="service-grid" id="serviceList">
+      <div class="loading"><div class="spinner"></div>Loading services...</div>
+    </div>
+    <button class="btn btn-gold" id="btn1" disabled onclick="goStep(2)">Next →</button>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="panel" id="panel2">
+    <div class="section-title">Choose Date & Time</div>
+    <div class="section-sub">Select your preferred appointment slot</div>
+    <input type="date" class="date-input" id="dateInput" onchange="loadSlots()">
+    <div id="slotsContainer"></div>
+    <button class="btn btn-gold" id="btn2" disabled onclick="goStep(3)">Next →</button>
+    <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="panel" id="panel3">
+    <div class="section-title">Your Details</div>
+    <div class="section-sub">We'll confirm your booking</div>
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" id="custName" placeholder="Your name" oninput="checkForm()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone Number</label>
+      <input type="tel" class="form-input" id="custPhone" placeholder="07xxx xxx xxx" oninput="checkForm()">
+    </div>
+    <div class="summary" id="bookingSummary"></div>
+    <button class="btn btn-gold" id="btn3" disabled onclick="submitBooking()">✂️ Confirm Booking</button>
+    <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="panel" id="panel4">
+    <div class="confirm-icon">✂️</div>
+    <div class="confirm-title">Booking Confirmed!</div>
+    <div class="confirm-sub" id="confirmDetails"></div>
+    <div class="summary" id="confirmSummary"></div>
+    <a href="https://wa.me/447501099583" target="_blank" class="btn btn-wa">💬 Message Us on WhatsApp</a>
+    <button class="btn btn-gold" onclick="resetAll()">Book Another</button>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════
+     INFO SECTION
+     ═══════════════════════════ -->
+<div class="panel" id="infoSection">
+
+  <div class="section-title">Find Us</div>
+
+  <div class="map-container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2482.8!2d-0.1686!3d51.5178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDMxJzA0LjEiTiAwwrAxMCcwNy4wIlc!5e0!3m2!1sen!2suk!4v1" allowfullscreen="" loading="lazy"></iframe>
+  </div>
+
+  <div class="info-card">
+    <h3>📍 Address</h3>
+    <p style="color:var(--text);font-size:14px">371-373 Edgware Road, London W2 1BS</p>
+  </div>
+
+  <div class="info-card">
+    <h3>🕐 Opening Hours</h3>
+    <div class="info-row"><span class="info-day">Monday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+    <div class="info-row"><span class="info-day">Tuesday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+    <div class="info-row"><span class="info-day">Wednesday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+    <div class="info-row"><span class="info-day">Thursday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+    <div class="info-row"><span class="info-day">Friday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+    <div class="info-row"><span class="info-day">Saturday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+    <div class="info-row"><span class="info-day">Sunday</span><span class="info-time">10:00 AM – 10:00 PM</span></div>
+  </div>
+
+  <div class="info-card">
+    <h3>💈 Services & Prices</h3>
+    <div class="info-row"><span class="info-day">Haircut</span><span class="info-time">£25</span></div>
+    <div class="info-row"><span class="info-day">Beard Trim</span><span class="info-time">£13</span></div>
+    <div class="info-row"><span class="info-day">Haircut + Beard</span><span class="info-time">£30</span></div>
+    <div class="info-row"><span class="info-day">Kids Cut</span><span class="info-time">£20</span></div>
+    <div class="info-row"><span class="info-day">Hair Wash + Style</span><span class="info-time">£20</span></div>
+  </div>
+
+  <div class="info-card">
+    <h3>📞 Contact</h3>
+    <div class="contact-btns">
+      <a href="https://wa.me/447501099583" target="_blank" class="btn btn-wa">💬 WhatsApp</a>
+      <a href="tel:+447501099583" class="btn btn-call">📞 Call</a>
+    </div>
+  </div>
+
+  <button class="btn btn-gold" onclick="showSection('booking')">✂️ Book Now</button>
+
+</div>
+
+</div>
+
+<div class="footer">
+  © 2026 London Barber — Edgware Road · Crafted by AQ Studio
+</div>
+
+<script>
+const API = 'http://127.0.0.1:8080';
+let selectedService = null;
+let selectedDate = null;
+let selectedTime = null;
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+// ═══ Section Navigation ═══
+function showSection(section) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('bookingSection').classList.remove('active');
+  document.getElementById('infoSection').classList.remove('active');
+  if (section === 'booking') {
+    document.getElementById('bookingSection').classList.add('active');
+    document.querySelectorAll('.nav-btn')[0].classList.add('active');
+  } else {
+    document.getElementById('infoSection').classList.add('active');
+    document.querySelectorAll('.nav-btn')[1].classList.add('active');
+  }
+}
+
+// ═══ Step Navigation ═══
+function goStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('panel' + i).classList.remove('active');
+  }
+  document.getElementById('panel' + n).classList.add('active');
+  document.querySelectorAll('.step').forEach(s => {
+    const sn = parseInt(s.dataset.step);
+    s.classList.remove('active', 'done');
+    if (sn === n) s.classList.add('active');
+    else if (sn < n) s.classList.add('done');
+  });
+  if (n === 3) showSummary();
+  if (n === 2) {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dateInput').min = today;
+  }
+}
+
+// ═══ Load Services ═══
+async function loadServices() {
+  try {
+    const res = await fetch(API + '/services');
+    const data = await res.json();
+    const grid = document.getElementById('serviceList');
+    if (data.length === 0) {
+      grid.innerHTML = '<div class="slots-empty">No services available yet</div>';
+      return;
+    }
+    grid.innerHTML = data.map(s => `
+      <div class="service-card" onclick="selectService(${s.id}, '${s.name}', ${s.price}, ${s.duration})" id="svc${s.id}">
+        <div class="svc-info">
+          <h3>${s.name}</h3>
+          <p>${s.duration} min</p>
+        </div>
+        <div class="svc-right">
+          <div class="svc-price">£${s.price}</div>
+          <div class="svc-check">✓</div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    document.getElementById('serviceList').innerHTML = '<div class="error">Cannot connect to server</div>';
+  }
+}
+
+function selectService(id, name, price, duration) {
+  selectedService = { id, name, price, duration };
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('svc' + id).classList.add('selected');
+  document.getElementById('btn1').disabled = false;
+}
+
+// ═══ Load Slots ═══
+async function loadSlots() {
+  const dateVal = document.getElementById('dateInput').value;
+  if (!dateVal) return;
+  selectedDate = dateVal;
+  selectedTime = null;
+  document.getElementById('btn2').disabled = true;
+  const dateObj = new Date(dateVal + 'T00:00:00');
+  const dayName = days[dateObj.getDay()];
+  const container = document.getElementById('slotsContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading available times...</div>';
+  try {
+    const res = await fetch(API + '/available-hours?date=' + dateVal + '&day=' + dayName);
+    if (res.status === 404) {
+      container.innerHTML = '<div class="slots-empty">Closed on this day</div>';
+      return;
+    }
+    const data = await res.json();
+    if (data.available_slots.length === 0) {
+      container.innerHTML = '<div class="slots-empty">Fully booked — try another day</div>';
+      return;
+    }
+    container.innerHTML = '<div class="slots-grid">' + data.available_slots.map(s => `
+      <div class="slot" onclick="selectSlot(this, '${s}')">${s}</div>
+    `).join('') + '</div>';
+  } catch (e) {
+    container.innerHTML = '<div class="error">Error loading times</div>';
+  }
+}
+
+function selectSlot(el, time) {
+  if (el.classList.contains('booked')) return;
+  selectedTime = time;
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn2').disabled = false;
+}
+
+// ═══ Summary ═══
+function showSummary() {
+  document.getElementById('bookingSummary').innerHTML = `
+    <div class="summary-row"><span class="summary-label">Service</span><span class="summary-value">${selectedService.name}</span></div>
+    <div class="summary-row"><span class="summary-label">Date</span><span class="summary-value">${selectedDate}</span></div>
+    <div class="summary-row"><span class="summary-label">Time</span><span class="summary-value">${selectedTime}</span></div>
+    <div class="summary-row"><span class="summary-label">Duration</span><span class="summary-value">${selectedService.duration} min</span></div>
+    <div class="summary-row"><span class="summary-label">Price</span><span class="summary-total">£${selectedService.price}</span></div>
+  `;
+}
+
+function checkForm() {
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  document.getElementById('btn3').disabled = !(name && phone);
+}
+
+// ═══ Submit ═══
+async function submitBooking() {
+  const btn = document.getElementById('btn3');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0"></div> Booking...';
+  const booking = {
+    customer_name: document.getElementById('custName').value.trim(),
+    customer_phone: document.getElementById('custPhone').value.trim(),
+    service_id: selectedService.id,
+    date: selectedDate,
+    time: selectedTime
+  };
+  try {
+    const res = await fetch(API + '/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(booking)
+    });
+    if (res.ok) {
+      document.getElementById('confirmDetails').textContent =
+        `${booking.customer_name} — ${selectedDate} at ${selectedTime}`;
+      document.getElementById('confirmSummary').innerHTML = `
+        <div class="summary-row"><span class="summary-label">Service</span><span class="summary-value">${selectedService.name}</span></div>
+        <div class="summary-row"><span class="summary-label">Date</span><span class="summary-value">${selectedDate}</span></div>
+        <div class="summary-row"><span class="summary-label">Time</span><span class="summary-value">${selectedTime}</span></div>
+        <div class="summary-row"><span class="summary-label">Price</span><span class="summary-total">£${selectedService.price}</span></div>
+      `;
+      goStep(4);
+    } else {
+      const err = await res.json();
+      btn.innerHTML = '✂️ Confirm Booking';
+      btn.disabled = false;
+      alert(err.detail || 'Something went wrong');
+    }
+  } catch (e) {
+    btn.innerHTML = '✂️ Confirm Booking';
+    btn.disabled = false;
+    alert('Connection error — please try again');
+  }
+}
+
+function resetAll() {
+  selectedService = null;
+  selectedDate = null;
+  selectedTime = null;
+  document.getElementById('custName').value = '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('dateInput').value = '';
+  document.getElementById('slotsContainer').innerHTML = '';
+  loadServices();
+  goStep(1);
+}
+
+loadServices();
+</script>
+
+</body>
+</html>
